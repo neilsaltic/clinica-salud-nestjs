@@ -1,0 +1,59 @@
+generator client {
+    provider     = "prisma-client"
+    output       = "../src/generated/prisma"
+    moduleFormat = "cjs"
+}
+
+datasource db {
+    provider = "postgresql"
+}
+
+enum EstadoCita {
+    PROGRAMADA
+    COMPLETADA
+    CANCELADA
+}
+
+enum Role {
+    RECEPCIONISTA
+    MEDICO
+    GERENCIA
+}
+
+model Users {
+    id           Int            @id @default(autoincrement())
+    name         String
+    email        String         @unique
+    password     String
+    role         Role
+    speciality   String?
+    appointments Appointments[]
+
+    @@map("users")
+}
+
+model Patients {
+    id           Int            @id @default(autoincrement())
+    name         String
+    lastname     String
+    email        String         @unique
+    dateOfBirth  DateTime       @map("fecha_nacimiento")
+    appointments Appointments[]
+
+    @@map("patients")
+}
+
+model Appointments {
+    id       Int        @id @default(autoincrement())
+    dateTime DateTime   @map("date_time")
+    status   EstadoCita @default(PROGRAMADA)
+    reason   String?
+
+    patientId Int @map("patient_id")
+    doctorId  Int @map("doctor_id")
+
+    patient Patients @relation(fields: [patientId], references: [id])
+    doctor  Users    @relation(fields: [doctorId], references: [id])
+
+    @@map("appointments")
+}
