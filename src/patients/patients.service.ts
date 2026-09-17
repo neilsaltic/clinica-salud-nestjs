@@ -8,68 +8,50 @@ import { Prisma } from '../generated/prisma/client.js';
 export class PatientsService {
   constructor(private readonly prisma: PrismaService) {}
   async create(createPatientDto: CreatePatientDto) {
-    try {
-      return await this.prisma.patients.create({
-        data: {
-          ...createPatientDto,
-          dateOfBirth: new Date(createPatientDto.dateOfBirth),
-        },
-      });
-    } catch (error) {
-      return error;
-    }
+    return await this.prisma.patients.create({
+      data: {
+        ...createPatientDto,
+        dateOfBirth: new Date(createPatientDto.dateOfBirth),
+      },
+    });
   }
 
   async findAll() {
-    try {
-      return await this.prisma.patients.findMany({
-        orderBy: { id: 'asc' },
-      });
-    } catch (error) {
-      return error;
-    }
+    return await this.prisma.patients.findMany({
+      orderBy: { id: 'asc' },
+    });
   }
 
   async findOne(id: number) {
-    try {
-      const user = await this.prisma.patients.findUnique({
-        where: { id },
-      });
-      if (!user) {
-        throw new NotFoundException(`Paciente ${id}, no encontrado`);
-      }
-      return user;
-    } catch (error) {
-      return error;
+    const user = await this.prisma.patients.findUnique({
+      where: { id },
+    });
+    if (!user) {
+      throw new NotFoundException(`Paciente ${id}, no encontrado`);
     }
+    return user;
   }
 
   async update(id: number, updatePatientDto: UpdatePatientDto) {
-    try {
-      const user = await this.prisma.patients.findUnique({
-        where: { id },
-      });
-      if (!user) {
-        throw new NotFoundException(`Paciente ${id}, no encontrado`);
-      }
-      return await this.prisma.patients.update({
-        where: { id },
-        data: updatePatientDto,
-      });
-    } catch (error) {
-      return error;
+    const user = await this.prisma.patients.findUnique({
+      where: { id },
+    });
+    if (!user) {
+      throw new NotFoundException(`Paciente ${id}, no encontrado`);
     }
+    return await this.prisma.patients.update({
+      where: { id },
+      data: updatePatientDto,
+    });
   }
 
   async remove(id: number) {
-    try {
-      const user = await this.prisma.patients.findUnique({
-        where: { id },
-      });
-      if (!user) {
-        throw new NotFoundException(`Paciente ${id}, no encontrado`);
-      }
-      return await this.prisma.patients.delete({ where: { id } });
-    } catch (error) {}
+    const user = await this.prisma.patients.findUnique({
+      where: { id },
+    });
+    if (!user) {
+      throw new NotFoundException(`Paciente ${id}, no encontrado`);
+    }
+    return await this.prisma.patients.delete({ where: { id } });
   }
 }
