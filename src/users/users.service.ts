@@ -42,4 +42,16 @@ export class UsersService {
     }
     return await this.prisma.users.delete({ where: { id } });
   }
+  async findByEmail(email: string) {
+    return this.prisma.users.findUnique({
+      where: { email },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        password: true,
+      },
+    });
+  }
 }
