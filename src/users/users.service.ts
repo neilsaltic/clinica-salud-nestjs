@@ -2,24 +2,52 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto.js';
 import { UpdateUserDto } from './dto/update-user.dto.js';
 import { PrismaService } from '../prisma/prisma.service.js';
+import bcrypt from 'bcryptjs';
+import { Role } from '../generated/prisma/enums.js';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
   async create(createUserDto: CreateUserDto) {
+    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
     return await this.prisma.users.create({
-      data: createUserDto,
+      data: {
+        name: createUserDto.name,
+        email: createUserDto.email,
+        password: hashedPassword,
+        role: createUserDto.role,
+        speciality: createUserDto.speciality,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        speciality: true,
+      },
     });
   }
 
   async findAll() {
-    return await this.prisma.users.findMany({ orderBy: { id: 'asc' } });
+    return await this.prisma.users.findMany({
+      orderBy: { id: 'asc' },
+      omit: { password: true },
+    });
   }
 
   async findOne(id: number) {
-    const user = await this.prisma.users.findUnique({ where: { id } });
+    const user = await this.prisma.users.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        creadoEn: true,
+      },
+    });
     if (!user) {
-      throw new NotFoundException(`el Usuario ${id}, no se encontro`);
+      throw new NotFoundException(`usuario de ID: ${id} no encontrado`);
     }
     return user;
   }
@@ -49,8 +77,8 @@ export class UsersService {
         id: true,
         name: true,
         email: true,
-        role: true,
         password: true,
+        role: true,
       },
     });
   }

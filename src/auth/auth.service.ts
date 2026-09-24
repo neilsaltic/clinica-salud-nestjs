@@ -1,4 +1,9 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  Inject,
+  forwardRef,
+} from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { UsersService } from '../users/users.service.js';
@@ -6,7 +11,10 @@ import { CreateUserDto } from '../users/dto/create-user.dto.js';
 import { LoginDto } from './dto/login.dto.js';
 @Injectable()
 export class AuthService {
-  constructor(private readonly userService: UsersService) {}
+  constructor(
+    @Inject(forwardRef(() => UsersService))
+    private readonly userService: UsersService,
+  ) {}
 
   async register(CreateUserDto: CreateUserDto) {
     return this.userService.create(CreateUserDto);

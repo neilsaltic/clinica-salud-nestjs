@@ -17,7 +17,7 @@ import { Roles } from '../auth/decorators/roles.decorators.js';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @Controller('patients')
-@ApiBearerAuth('JwT-auth')
+@ApiBearerAuth('JWT-auth')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiResponse({
   status: 401,
