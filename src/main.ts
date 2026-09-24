@@ -5,6 +5,7 @@ import 'dotenv/config';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { LoggingInterceptor } from './common/logging.interceptor.js';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -39,6 +40,8 @@ async function bootstrap() {
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);
-  await app.listen(process.env.PORT ?? 3000);
+
+  const configService = app.get(ConfigService);
+  await app.listen(configService.getOrThrow<number>('PORT'));
 }
 await bootstrap();
