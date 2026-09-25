@@ -3,12 +3,14 @@ import { CreateAppointmentDto } from './dto/create-appointment.dto.js';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { PatientsService } from '../patients/patients.service.js';
+import { UsersService } from '../users/users.service.js';
 
 @Injectable()
 export class AppointmentService {
   constructor(
     private prisma: PrismaService,
     private readonly patientService: PatientsService,
+    private readonly userService: UsersService,
   ) {}
   async create(createAppointmentDto: CreateAppointmentDto) {
     const { datetime, reason, patientId, doctorId } = createAppointmentDto;
@@ -18,13 +20,17 @@ export class AppointmentService {
         `El paciente con el id ${patientId} no existe`,
       );
     }
+    const doctor = await this.userService.findDoctor(doctorId);
+    if (!doctor) {
+      throw new NotFoundException(`El doctor con el id ${patientId} no existe`);
+    }
 
     return this.prisma.appointments.create({
       data: {
         dateTime: new Date(datetime),
         reason,
-        patientId,
-        doctorId,
+        patientId: patient.id,
+        doctorId: doctor.id,
       },
       include: {
         patient: { select: { id: true, name: true, lastname: true } },

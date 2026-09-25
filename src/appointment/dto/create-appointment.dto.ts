@@ -32,7 +32,7 @@ export class CreateAppointmentDto {
   })
   reason: string;
   @ApiProperty({
-    example: '1',
+    example: 1,
     description: 'el id de paciente para cita',
   })
   @IsNotEmpty({ message: 'El ID del paciente es obligatorio' })
@@ -40,7 +40,7 @@ export class CreateAppointmentDto {
   @IsPositive({ message: 'El ID del paciente debe ser mayor a 0' })
   patientId: number;
   @ApiProperty({
-    example: '1',
+    example: 1,
     description: 'Id del doctor que atendera la cita',
   })
   @IsNotEmpty({ message: 'El ID del medico es obligatorio' })

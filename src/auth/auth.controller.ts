@@ -5,6 +5,7 @@ import { LoginDto } from './dto/login.dto.js';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from './guards/jwt-auth.guard.js';
 import { RolesGuard } from './guards/roles.guard.js';
+import { RegisterUserDto } from './dto/register.dto.js';
 CreateUserDto;
 @Controller('auth')
 export class AuthController {
@@ -20,8 +21,8 @@ export class AuthController {
     status: 400,
     description: 'mal formato del cuerpo de la solicitud',
   })
-  async register(@Body() CreateUserDto: CreateUserDto) {
-    return this.authService.register(CreateUserDto);
+  async register(@Body() registerUserDto: RegisterUserDto) {
+    return this.authService.register(registerUserDto);
   }
   @Post('login')
   @ApiOperation({ summary: 'logea a un usuario existente' })
