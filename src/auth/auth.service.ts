@@ -10,6 +10,7 @@ import { UsersService } from '../users/users.service.js';
 import { CreateUserDto } from '../users/dto/create-user.dto.js';
 import { LoginDto } from './dto/login.dto.js';
 import { ConfigService } from '@nestjs/config';
+import { RegisterUserDto } from './dto/register.dto.js';
 @Injectable()
 export class AuthService {
   constructor(
@@ -18,8 +19,8 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  async register(CreateUserDto: CreateUserDto) {
-    return this.userService.create(CreateUserDto);
+  async register(registerDto: RegisterUserDto) {
+    return this.userService.create(registerDto);
   }
 
   async login(LoginDto: LoginDto) {

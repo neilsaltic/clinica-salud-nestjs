@@ -38,7 +38,6 @@ export class AppointmentController {
     status: 400,
     description: 'mal formato en el cuerpo de la solicitud',
   })
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('RECEPCIONISTA')
   create(@Body() createAppointmentDto: CreateAppointmentDto) {
     return this.appointmentService.create(createAppointmentDto);
@@ -53,7 +52,6 @@ export class AppointmentController {
     status: 200,
     description: 'vista de usuarios exitosa ',
   })
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('RECEPCIONISTA', 'MEDICO')
   findAll() {
     return this.appointmentService.findAll();
@@ -72,7 +70,6 @@ export class AppointmentController {
     status: 404,
     description: 'no se encontro',
   })
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('RECEPCIONISTA', 'MEDICO')
   findOne(@Param('id') id: string) {
     return this.appointmentService.findOne(+id);
@@ -91,7 +88,6 @@ export class AppointmentController {
     status: 404,
     description: 'no se encontro',
   })
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('RECEPCIONISTA', 'MEDICO')
   update(
     @Param('id') id: string,
@@ -102,8 +98,7 @@ export class AppointmentController {
 
   @Delete(':id')
   @ApiOperation({
-    summary:
-      'elimina a una cita en especifico solo disponible para recepcionista y Medico',
+    summary: 'elimina a una cita en especifico solo disponible para Gerencia',
   })
   @ApiResponse({
     status: 200,
@@ -113,7 +108,6 @@ export class AppointmentController {
     status: 404,
     description: 'no se encontro',
   })
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('GERENCIA')
   remove(@Param('id') id: string) {
     return this.appointmentService.remove(+id);

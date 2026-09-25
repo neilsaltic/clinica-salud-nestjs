@@ -15,7 +15,7 @@ export class UsersService {
         name: createUserDto.name,
         email: createUserDto.email,
         password: hashedPassword,
-        role: createUserDto.role,
+        role: createUserDto.role ?? Role.RECEPCIONISTA,
         speciality: createUserDto.speciality,
       },
       select: {
@@ -50,6 +50,30 @@ export class UsersService {
       throw new NotFoundException(`usuario de ID: ${id} no encontrado`);
     }
     return user;
+  }
+  async findDoctor(id: number) {
+    const doctor = await this.prisma.users.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        speciality: true,
+      },
+    });
+
+    if (!doctor) {
+      throw new NotFoundException(`El médico con ID ${id} no existe`);
+    }
+
+    if (doctor.role !== Role.MEDICO) {
+      throw new NotFoundException(
+        `El usuario con ID ${id} no está registrado como Médico`,
+      );
+    }
+
+    return doctor;
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
